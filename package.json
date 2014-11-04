@@ -1,0 +1,21 @@
+{
+  "name": "crom",
+  "version": "1.0.0",
+  "description": "A set of JS Utils that laugh at your four winds.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Lowrimore",
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-karma": "^0.9.0",
+    "grunt-mincer": "^1.0.0-rc1",
+    "karma": "^0.12.24",
+    "karma-jasmine": "^0.2.3",
+    "karma-phantomjs-launcher": "^0.1.4"
+  }
+}
