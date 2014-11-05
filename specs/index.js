@@ -1,4 +1,61 @@
-describe('def_mixin', function() {
+var TestCollection,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+TestCollection = (function(_super) {
+  __extends(TestCollection, _super);
+
+  function TestCollection() {
+    return TestCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  TestCollection.prototype.model = Crom.Model;
+
+  return TestCollection;
+
+})(Crom.Collection);
+
+describe('Crom.Collection', function() {
+  var collection;
+  collection = null;
+  beforeEach(function() {
+    return collection = new TestCollection();
+  });
+  it('should extend Backbone.Collection', function() {
+    return expect(collection instanceof Backbone.Collection).toBeTruthy();
+  });
+  return describe('#duplicate', function() {
+    var result;
+    result = null;
+    beforeEach(function() {
+      var models;
+      models = [
+        {
+          name: 'foo',
+          age: 32
+        }, {
+          name: 'bar',
+          age: 99
+        }
+      ];
+      collection.reset(models);
+      return result = collection.duplicate();
+    });
+    it('should not be a reference to the original collection', function() {
+      return expect(result).not.toBe(collection);
+    });
+    return it('should have matching model attributes', function() {
+      var collectionAttrs, resultAttrs;
+      resultAttrs = result.models.map(function(m) {
+        return m.attributes;
+      });
+      collectionAttrs = collection.models.map(function(m) {
+        return m.attributes;
+      });
+      return expect(resultAttrs).toEqual(collectionAttrs);
+    });
+  });
+});describe('def_mixin', function() {
   def_mixin('Foo.Bar.MyMixin', {
     party: function() {
       return 'Yay!';
@@ -40,6 +97,152 @@ describe('def_mixin', function() {
     });
     return it('should define a `__locals__` namespace', function() {
       return expect(result.__locals__).toBeDefined();
+    });
+  });
+});var TestCollection, TestModel,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+TestCollection = (function(_super) {
+  __extends(TestCollection, _super);
+
+  function TestCollection() {
+    return TestCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  TestCollection.prototype.model = Crom.Model;
+
+  return TestCollection;
+
+})(Crom.Collection);
+
+TestModel = (function(_super) {
+  __extends(TestModel, _super);
+
+  function TestModel() {
+    return TestModel.__super__.constructor.apply(this, arguments);
+  }
+
+  TestModel.prototype.defaults = {
+    name: null,
+    site: null
+  };
+
+  TestModel.prototype.nested = {
+    songs: TestCollection,
+    label: Crom.Model
+  };
+
+  return TestModel;
+
+})(Crom.Model);
+
+describe('Crom.Model', function() {
+  var data, model;
+  model = null;
+  data = {
+    name: "Peter Cetera",
+    site: 'petercetera.com',
+    songs: [
+      {
+        name: 'Glory of Love',
+        year: 1986
+      }, {
+        name: 'The Next Time I Fall',
+        year: 1986
+      }
+    ],
+    label: {
+      name: 'Warner Bros.',
+      site: 'warnerbrosrecords.com'
+    }
+  };
+  beforeEach(function() {
+    return model = new TestModel(data);
+  });
+  it('should extend Backbone.Model', function() {
+    return expect(model instanceof Backbone.Model).toBeTruthy();
+  });
+  describe('#set', function() {
+    describe('when provided a basic hash of attrs', function() {
+      var name, result;
+      name = 'Thoth Amon';
+      result = null;
+      beforeEach(function() {
+        var attrs;
+        attrs = {
+          name: name
+        };
+        model.set(attrs);
+        return result = model.get('name');
+      });
+      return it('should set the model name attr', function() {
+        return expect(result).toEqual(name);
+      });
+    });
+    return describe('when provide a hash with a nested structure', function() {
+      describe('when the structure is singular', function() {
+        var name, result, site;
+        name = 'Puba Records';
+        site = 'grandpu.com';
+        result = null;
+        beforeEach(function() {
+          var attrs;
+          attrs = {
+            label: {
+              name: name,
+              site: site
+            }
+          };
+          model.set(attrs);
+          return result = model.label;
+        });
+        it('should be an instance of Crom.Model', function() {
+          return expect(result instanceof Crom.Model).toBeTruthy();
+        });
+        it('should set the nested name attribute', function() {
+          return expect(result.get('name')).toEqual(name);
+        });
+        return it('should set the nested site attribute', function() {
+          return expect(result.get('site')).toEqual(site);
+        });
+      });
+      return describe('when the structure is a collection', function() {
+        var result;
+        result = null;
+        beforeEach(function() {
+          var attrs;
+          attrs = {
+            songs: [
+              {
+                name: 'foo',
+                year: 2000
+              }, {
+                name: 'bar',
+                year: 3000
+              }
+            ]
+          };
+          model.set(attrs);
+          return result = model.songs;
+        });
+        return it('should be an instance of Backbone.Collection', function() {
+          return expect(result instanceof Backbone.Collection).toBeTruthy();
+        });
+      });
+    });
+  });
+  return describe('#duplicate', function() {
+    var result;
+    result = null;
+    beforeEach(function() {
+      return result = model.duplicate();
+    });
+    it('should not be a reference to the duplicated model', function() {
+      return expect(result).not.toBe(model);
+    });
+    return it('should have matching attributes', function() {
+      return expect(result.attributes).toEqual(model.attributes);
     });
   });
 });describe('pkg', function() {

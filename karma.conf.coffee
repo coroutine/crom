@@ -7,6 +7,7 @@ module.exports = (config) ->
     reporters:  ['dots']
     files:      [
       'bower_components/underscore/underscore.js'
+      'bower_components/backbone/backbone.js'
       'dist/index.js'
       'specs/index.js'
     ]
