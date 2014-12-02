@@ -51,13 +51,15 @@ URL = (function() {
   };
 
   function URL(value) {
-    _(value != null ? value.match(URL.matcher) : void 0).chain().rest().zip(URL.parts).each((function(_this) {
-      return function(_arg) {
-        var part, val;
-        val = _arg[0], part = _arg[1];
-        return _this[part] = val;
-      };
-    })(this)).value();
+    if (value) {
+      _(value != null ? value.match(URL.matcher) : void 0).chain().rest().zip(URL.parts).each((function(_this) {
+        return function(_arg) {
+          var part, val;
+          val = _arg[0], part = _arg[1];
+          return _this[part] = val;
+        };
+      })(this)).value();
+    }
   }
 
   URL.prototype.clone = function() {

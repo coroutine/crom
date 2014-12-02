@@ -63,11 +63,12 @@ class URL
     "data:#{contentType};base64,#{dataString}"
 
   constructor: (value) ->
-    _(value?.match(URL.matcher)).chain()
-      .rest()
-      .zip(URL.parts)
-      .each(([val, part]) => this[part] = val)
-      .value()
+    if value
+      _(value?.match(URL.matcher)).chain()
+        .rest()
+        .zip(URL.parts)
+        .each(([val, part]) => this[part] = val)
+        .value()
 
   clone: ->
     _(new URL()).tap (url) =>
@@ -78,7 +79,7 @@ class URL
   merge: (url) ->
     copy  = @clone()
     url   = new URL(url) if _(url).isString()
-    
+
     _(url).chain()
       .pick(URL.parts)
       .each((val, part) => copy[part] = val if val?)
