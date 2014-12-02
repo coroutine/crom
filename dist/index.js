@@ -51,24 +51,36 @@ URL = (function() {
   };
 
   function URL(value) {
-    var self;
-    self = this;
-    _(value != null ? value.match(URL.matcher) : void 0).chain().rest().zip(URL.parts).each(function(_arg) {
-      var part, val;
-      val = _arg[0], part = _arg[1];
-      return self[part] = val;
-    }).value();
+    _(value != null ? value.match(URL.matcher) : void 0).chain().rest().zip(URL.parts).each((function(_this) {
+      return function(_arg) {
+        var part, val;
+        val = _arg[0], part = _arg[1];
+        return _this[part] = val;
+      };
+    })(this)).value();
   }
 
+  URL.prototype.clone = function() {
+    return _(new URL()).tap((function(_this) {
+      return function(url) {
+        return _(URL.parts).each(function(part) {
+          return url[part] = _this[part];
+        });
+      };
+    })(this));
+  };
+
   URL.prototype.merge = function(url) {
+    var copy;
+    copy = this.clone();
     _(url).chain().pick(URL.parts).each((function(_this) {
       return function(val, part) {
         if (val != null) {
-          return _this[part] = val;
+          return copy[part] = val;
         }
       };
     })(this)).value();
-    return this;
+    return copy;
   };
 
   URL.prototype.set = function(part, value) {

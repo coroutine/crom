@@ -63,24 +63,29 @@ class URL
     "data:#{contentType};base64,#{dataString}"
 
   constructor: (value) ->
-    self = this
-
     _(value?.match(URL.matcher)).chain()
       .rest()
       .zip(URL.parts)
-      .each(([val, part]) -> self[part] = val)
+      .each(([val, part]) => this[part] = val)
       .value()
 
-  # Merge the attributes of another URL object into this.  Chainable
+  clone: ->
+    _(new URL()).tap (url) =>
+      _(URL.parts).each (part) => url[part] = this[part]
+
+  # Merge the attributes of another URL object with the attributes of this URL,
+  # returning a new URL object.  Chainable
   merge: (url) ->
+    copy = @clone()
+
     _(url).chain()
       .pick(URL.parts)
-      .each((val, part) => this[part] = val if val?)
+      .each((val, part) => copy[part] = val if val?)
       .value()
+    copy
 
-    this
-
-  # Set a URL part to the specified value.  Chainable
+  # Set a URL part to the specified value. This method changes the original
+  # object. Chainable
   set: (part, value) ->
     throw "#{part} is not a valid URL part" unless this.hasOwnProperty(part)
     this[part] = value

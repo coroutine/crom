@@ -39,6 +39,22 @@ describe 'URL', ->
         expect(result).toEqual(urlString)
 
     # --------------------------------------------------------------------------
+    # clone
+    # --------------------------------------------------------------------------
+
+    describe '#clone', ->
+      result = null
+
+      beforeEach ->
+        result = inst.clone()
+
+      it 'should reference a new URL object', ->
+        expect(result).not.toBe(inst)
+
+      it 'should be equal when its parts have the same value', ->
+        expect(result).toEqual(inst)
+
+    # --------------------------------------------------------------------------
     # merge
     # --------------------------------------------------------------------------
 

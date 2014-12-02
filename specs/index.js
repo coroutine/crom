@@ -299,6 +299,19 @@ describe('Crom.Model', function() {
         return expect(result).toEqual(urlString);
       });
     });
+    describe('#clone', function() {
+      var result;
+      result = null;
+      beforeEach(function() {
+        return result = inst.clone();
+      });
+      it('should reference a new URL object', function() {
+        return expect(result).not.toBe(inst);
+      });
+      return it('should be equal when its parts have the same value', function() {
+        return expect(result).toEqual(inst);
+      });
+    });
     describe('#merge', function() {
       var expected, otherString, otherURL, result;
       otherString = null;
