@@ -313,44 +313,62 @@ describe('Crom.Model', function() {
       });
     });
     describe('#merge', function() {
-      var expected, otherString, otherURL, result;
-      otherString = null;
-      otherURL = null;
-      result = null;
-      expected = null;
-      beforeEach(function() {
-        otherURL = new URL(otherString);
-        return result = inst.merge(otherURL).toString();
-      });
-      describe('with a host part', function() {
-        otherString = 'http://foobar.io:3456';
-        expected = "" + otherString + urlString;
-        return it('should merge the two urls', function() {
-          return expect(result).toEqual(expected);
+      describe('when provided an instance of URL', function() {
+        var expected, otherString, otherURL, result;
+        otherString = null;
+        otherURL = null;
+        result = null;
+        expected = null;
+        beforeEach(function() {
+          otherURL = new URL(otherString);
+          return result = inst.merge(otherURL).toString();
+        });
+        describe('with a host part', function() {
+          otherString = 'http://foobar.io:3456';
+          expected = "" + otherString + urlString;
+          return it('should merge the two urls', function() {
+            return expect(result).toEqual(expected);
+          });
+        });
+        describe('with a query string', function() {
+          otherString = '?foo=bar&baz=quux';
+          expected = "" + urlString + otherString;
+          return it('should merge the two urls', function() {
+            return expect(result).toEqual(expected);
+          });
+        });
+        describe('with a host and a query string', function() {
+          var hostString, queryString;
+          hostString = 'https://www.corndogs.com';
+          queryString = '?search=mustard';
+          otherString = "" + hostString + queryString;
+          expected = "" + hostString + urlString + queryString;
+          return it('should merge the two urls', function() {
+            return expect(result).toEqual(expected);
+          });
+        });
+        return describe('with basic auth credentials', function() {
+          otherString = 'https://drdre:beatsbydre@shittyheadphones.com';
+          expected = "" + otherString + urlString;
+          return it('should merge the two urls', function() {
+            return expect(result).toEqual(expected);
+          });
         });
       });
-      describe('with a query string', function() {
-        otherString = '?foo=bar&baz=quux';
-        expected = "" + urlString + otherString;
-        return it('should merge the two urls', function() {
-          return expect(result).toEqual(expected);
+      return describe('when provided an instance of String', function() {
+        var expected, otherString, result;
+        otherString = null;
+        result = null;
+        expected = null;
+        beforeEach(function() {
+          return result = inst.merge(otherString).toString();
         });
-      });
-      describe('with a host and a query string', function() {
-        var hostString, queryString;
-        hostString = 'https://www.corndogs.com';
-        queryString = '?search=mustard';
-        otherString = "" + hostString + queryString;
-        expected = "" + hostString + urlString + queryString;
-        return it('should merge the two urls', function() {
-          return expect(result).toEqual(expected);
-        });
-      });
-      return describe('with basic auth credentials', function() {
-        otherString = 'https://drdre:beatsbydre@shittyheadphones.com';
-        expected = "" + otherString + urlString;
-        return it('should merge the two urls', function() {
-          return expect(result).toEqual(expected);
+        return describe(' with a host', function() {
+          otherString = 'http://myhost.org';
+          expected = "" + otherString + urlString;
+          return it('should merge the String with the URL', function() {
+            return expect(result).toEqual(expected);
+          });
         });
       });
     });

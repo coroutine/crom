@@ -76,8 +76,9 @@ class URL
   # Merge the attributes of another URL object with the attributes of this URL,
   # returning a new URL object.  Chainable
   merge: (url) ->
-    copy = @clone()
-
+    copy  = @clone()
+    url   = new URL(url) if _(url).isString()
+    
     _(url).chain()
       .pick(URL.parts)
       .each((val, part) => copy[part] = val if val?)

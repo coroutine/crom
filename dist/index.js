@@ -73,6 +73,9 @@ URL = (function() {
   URL.prototype.merge = function(url) {
     var copy;
     copy = this.clone();
+    if (_(url).isString()) {
+      url = new URL(url);
+    }
     _(url).chain().pick(URL.parts).each((function(_this) {
       return function(val, part) {
         if (val != null) {

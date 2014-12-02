@@ -59,45 +59,62 @@ describe 'URL', ->
     # --------------------------------------------------------------------------
 
     describe '#merge', ->
-      otherString = null
-      otherURL    = null
-      result      = null
-      expected    = null
 
-      beforeEach ->
-        otherURL  = new URL(otherString)
-        result    = inst.merge(otherURL).toString()
+      describe 'when provided an instance of URL', ->
 
-      describe 'with a host part', ->
-        otherString = 'http://foobar.io:3456'
-        expected    = "#{otherString}#{urlString}"
+        otherString = null
+        otherURL    = null
+        result      = null
+        expected    = null
 
-        it 'should merge the two urls', ->
-          expect(result).toEqual(expected)
+        beforeEach ->
+          otherURL  = new URL(otherString)
+          result    = inst.merge(otherURL).toString()
 
-      describe 'with a query string', ->
-        otherString = '?foo=bar&baz=quux'
-        expected    = "#{urlString}#{otherString}"
+        describe 'with a host part', ->
+          otherString = 'http://foobar.io:3456'
+          expected    = "#{otherString}#{urlString}"
 
-        it 'should merge the two urls', ->
-          expect(result).toEqual(expected)
+          it 'should merge the two urls', ->
+            expect(result).toEqual(expected)
 
-      describe 'with a host and a query string', ->
-        hostString  = 'https://www.corndogs.com'
-        queryString = '?search=mustard'
-        otherString = "#{hostString}#{queryString}"
-        expected    = "#{hostString}#{urlString}#{queryString}"
+        describe 'with a query string', ->
+          otherString = '?foo=bar&baz=quux'
+          expected    = "#{urlString}#{otherString}"
 
-        it 'should merge the two urls', ->
-          expect(result).toEqual(expected)
+          it 'should merge the two urls', ->
+            expect(result).toEqual(expected)
 
-      describe 'with basic auth credentials', ->
-        otherString = 'https://drdre:beatsbydre@shittyheadphones.com'
-        expected    = "#{otherString}#{urlString}"
+        describe 'with a host and a query string', ->
+          hostString  = 'https://www.corndogs.com'
+          queryString = '?search=mustard'
+          otherString = "#{hostString}#{queryString}"
+          expected    = "#{hostString}#{urlString}#{queryString}"
 
-        it 'should merge the two urls', ->
-          expect(result).toEqual(expected)
+          it 'should merge the two urls', ->
+            expect(result).toEqual(expected)
 
+        describe 'with basic auth credentials', ->
+          otherString = 'https://drdre:beatsbydre@shittyheadphones.com'
+          expected    = "#{otherString}#{urlString}"
+
+          it 'should merge the two urls', ->
+            expect(result).toEqual(expected)
+
+      describe 'when provided an instance of String', ->
+        otherString = null
+        result      = null
+        expected    = null
+
+        beforeEach ->
+          result    = inst.merge(otherString).toString()
+
+        describe ' with a host', ->
+          otherString = 'http://myhost.org'
+          expected    = "#{otherString}#{urlString}"
+
+          it 'should merge the String with the URL', ->
+            expect(result).toEqual(expected)
 
     # --------------------------------------------------------------------------
     # set
