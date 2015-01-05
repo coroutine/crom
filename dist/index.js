@@ -249,7 +249,143 @@ Crom.Collection = (function(_super) {
 
   return Collection;
 
-})(Backbone.Collection);
+})(Backbone.Collection);var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+pkg('Crom.Pagination');
+
+Crom.Pagination.Model = (function(_super) {
+  __extends(Model, _super);
+
+  Model.prototype.defaults = {
+    total_count: 0,
+    count: 0,
+    current_page: 1,
+    num_pages: 1,
+    offset_value: 1
+  };
+
+  function Model(attributes, options) {
+    this.collection = attributes.collection;
+    delete attributes.collection;
+    Model.__super__.constructor.apply(this, arguments);
+  }
+
+  Model.prototype.initialize = function() {
+    this.listenTo(this.collection, 'remove', this.itemRemoved);
+    return this.listenTo(this.collection, 'add', this.itemAdded);
+  };
+
+  Model.prototype.itemRemoved = function() {
+    return this.set('total_count', this.totalCount() - 1);
+  };
+
+  Model.prototype.itemAdded = function() {
+    return this.set('total_count', this.totalCount() + 1);
+  };
+
+  Model.prototype.totalCount = function() {
+    return this.get('total_count') || 0;
+  };
+
+  Model.prototype.currentPage = function() {
+    return this.get('current_page') || 1;
+  };
+
+  Model.prototype.lastPage = function() {
+    return this.get('num_pages');
+  };
+
+  Model.prototype.isFirstPage = function() {
+    return this.currentPage() === 1;
+  };
+
+  Model.prototype.isLastPage = function() {
+    return this.currentPage() >= this.lastPage();
+  };
+
+  Model.prototype.nextPage = function() {
+    if (!this.isLastPage()) {
+      return this.set('current_page', this.currentPage() + 1);
+    }
+  };
+
+  Model.prototype.prevPage = function() {
+    if (!this.isFirstPage()) {
+      return this.set('current_page', this.currentPage() - 1);
+    }
+  };
+
+  return Model;
+
+})(Backbone.Model);var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+pkg('Crom.Pagination');
+
+Crom.Pagination.Collection = (function(_super) {
+  __extends(Collection, _super);
+
+  function Collection() {
+    return Collection.__super__.constructor.apply(this, arguments);
+  }
+
+  Collection.prototype.initialize = function() {
+    this.pagination = new Crom.Pagination.Model({
+      collection: this
+    });
+    return Collection.__super__.initialize.apply(this, arguments);
+  };
+
+  Collection.prototype.parse = function(resp) {
+    this.pagination.set(resp.pagination);
+    return this._prepareResponse(resp);
+  };
+
+  Collection.prototype.fetchNextPage = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    if (this.pagination.nextPage() != null) {
+      return this.fetch(options);
+    }
+  };
+
+  Collection.prototype.fetchPrevPage = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    if (this.pagination.prevPage() != null) {
+      return this.fetch(options);
+    }
+  };
+
+  Collection.prototype.fetch = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    options.data || (options.data = {});
+    _(options.data).extend({
+      page: this.pagination.currentPage()
+    });
+    return Collection.__super__.fetch.call(this, options);
+  };
+
+  Collection.prototype._prepareResponse = function(resp) {
+    var value;
+    delete resp.pagination;
+    if (_(resp).size() === 1) {
+      value = _(resp).values()[0];
+      if (typeof value === 'object') {
+        resp = value;
+      }
+    }
+    return resp;
+  };
+
+  return Collection;
+
+})(Crom.Collection);
 ;
 
 
