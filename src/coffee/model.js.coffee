@@ -3,6 +3,7 @@ pkg 'Crom'
 class Crom.Model extends Backbone.Model
 
   constructor: ->
+    @nested = _(this).result('nested')
     _(@nested).each @_createNestedInstance
     super
 

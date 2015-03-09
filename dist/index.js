@@ -127,6 +127,7 @@ Crom.Model = (function(_super) {
 
   function Model() {
     this._createNestedInstance = __bind(this._createNestedInstance, this);
+    this.nested = _(this).result('nested');
     _(this.nested).each(this._createNestedInstance);
     Model.__super__.constructor.apply(this, arguments);
   }
