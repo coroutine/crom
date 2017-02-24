@@ -8,6 +8,6 @@ module.exports = (config) ->
     files:      [
       'bower_components/underscore/underscore.js'
       'bower_components/backbone/backbone.js'
-      'dist/index.js'
+      'dist/crom.js'
       'specs/index.js'
     ]

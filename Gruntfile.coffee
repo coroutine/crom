@@ -5,7 +5,7 @@ module.exports = (grunt) ->
     mince:
       dist:
         src:  'src/coffee/index.js.coffee'
-        dest: 'dist/index.js'
+        dest: 'dist/crom.js'
 
       specs:
         src:  'specs/coffee/index.js.coffee'

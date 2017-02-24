@@ -1,132 +1,23 @@
-var Mixable, URL, def_mixin, pkg,
-  __slice = [].slice;
+var pkg;
 
 pkg = function(packageName) {
-  var obj, path, _ref;
-  _ref = [packageName.split('.'), window], path = _ref[0], obj = _ref[1];
+  var obj, path, ref;
+  ref = [packageName.split('.'), window], path = ref[0], obj = ref[1];
   _(path).each(function(pe) {
     return obj = (obj[pe] || (obj[pe] = {}));
   });
   return obj;
-};
-
-Mixable = {
-  includeIn: function() {
-    var args, receiver, _ref;
-    receiver = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    this.onInclude || (this.onInclude = this.mixables.onInclude);
-    delete this.mixables['onInclude'];
-    _(receiver).extend(this.utils, this.mixables);
-    return (_ref = this.onInclude) != null ? _ref.apply(receiver, args) : void 0;
-  },
-  utils: {
-    __receiver__: function() {
-      return this.constructor.prototype;
-    },
-    __locals__: function() {
-      return {};
-    }
-  }
-};
-
-def_mixin = function(name, props) {
-  var base;
-  base = pkg(name);
-  _(base).extend(Mixable);
-  return base.mixables = props;
-};
-
-URL = (function() {
-  URL.matcher = /^(?:(.*?):\/{1,3})?(?:([^\s:]+)?:([^\s:]+)?@)?([a-z0-9\.-]+)?(?:\:(\d+))?(\/[^?#\s]+)?(?:\?([^#\s]+))?(?:(#[a-z0-9_.-]+))?/i;
-
-  URL.parts = ['protocol', 'username', 'password', 'host', 'port', 'path', 'query', 'anchor'];
-
-  URL.dataURLMatcher = /^data:[\w\/]+?;base64,/g;
-
-  URL.dataURL = function(contentType, dataString) {
-    if (dataString != null ? dataString.match(this.dataURLMatcher) : void 0) {
-      return dataString;
-    }
-    return "data:" + contentType + ";base64," + dataString;
-  };
-
-  function URL(value) {
-    if (value) {
-      _(value != null ? value.match(URL.matcher) : void 0).chain().rest().zip(URL.parts).each((function(_this) {
-        return function(_arg) {
-          var part, val;
-          val = _arg[0], part = _arg[1];
-          return _this[part] = val;
-        };
-      })(this)).value();
-    }
-  }
-
-  URL.prototype.clone = function() {
-    return _(new URL()).tap((function(_this) {
-      return function(url) {
-        return _(URL.parts).each(function(part) {
-          return url[part] = _this[part];
-        });
-      };
-    })(this));
-  };
-
-  URL.prototype.merge = function(url) {
-    var copy;
-    copy = this.clone();
-    if (_(url).isString()) {
-      url = new URL(url);
-    }
-    _(url).chain().pick(URL.parts).each((function(_this) {
-      return function(val, part) {
-        if (val != null) {
-          return copy[part] = val;
-        }
-      };
-    })(this)).value();
-    return copy;
-  };
-
-  URL.prototype.set = function(part, value) {
-    if (!this.hasOwnProperty(part)) {
-      throw "" + part + " is not a valid URL part";
-    }
-    this[part] = value;
-    return this;
-  };
-
-  URL.prototype.toString = function() {
-    var credentials, hasCredentials, port, protocol, query;
-    hasCredentials = (this.username != null) || (this.password != null);
-    if (this.protocol != null) {
-      protocol = "" + this.protocol + "://";
-    }
-    if (hasCredentials) {
-      credentials = "" + (this.username || '') + ":" + (this.password || '') + "@";
-    }
-    if (this.port != null) {
-      port = ":" + this.port;
-    }
-    if (this.query != null) {
-      query = "?" + this.query;
-    }
-    return [protocol, credentials, this.host, port, this.path, query, this.anchor].join('');
-  };
-
-  return URL;
-
-})();var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+};var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 pkg('Crom');
 
-Crom.Model = (function(_super) {
-  __extends(Model, _super);
+Crom.Model = (function(superClass) {
+  extend(Model, superClass);
 
   function Model() {
-    this._createNestedInstance = __bind(this._createNestedInstance, this);
+    this._createNestedInstance = bind(this._createNestedInstance, this);
     this.nested = _(this).result('nested');
     _(this.nested).each(this._createNestedInstance);
     Model.__super__.constructor.apply(this, arguments);
@@ -161,8 +52,8 @@ Crom.Model = (function(_super) {
       return function(data) {
         data._cid = _this.cid;
         return _(_this.nested).each(function(ModelClass, instanceName) {
-          var _ref;
-          return data[instanceName] = (_ref = _this[instanceName]) != null ? _ref.toJSON(options) : void 0;
+          var ref;
+          return data[instanceName] = (ref = _this[instanceName]) != null ? ref.toJSON(options) : void 0;
         });
       };
     })(this));
@@ -228,13 +119,13 @@ Crom.Model = (function(_super) {
 
   return Model;
 
-})(Backbone.Model);var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+})(Backbone.Model);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 pkg('Crom');
 
-Crom.Collection = (function(_super) {
-  __extends(Collection, _super);
+Crom.Collection = (function(superClass) {
+  extend(Collection, superClass);
 
   function Collection() {
     return Collection.__super__.constructor.apply(this, arguments);
@@ -250,13 +141,13 @@ Crom.Collection = (function(_super) {
 
   return Collection;
 
-})(Backbone.Collection);var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+})(Backbone.Collection);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 pkg('Crom.Pagination');
 
-Crom.Pagination.Model = (function(_super) {
-  __extends(Model, _super);
+Crom.Pagination.Model = (function(superClass) {
+  extend(Model, superClass);
 
   Model.prototype.defaults = {
     total_count: 0,
@@ -319,13 +210,13 @@ Crom.Pagination.Model = (function(_super) {
 
   return Model;
 
-})(Backbone.Model);var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+})(Backbone.Model);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 pkg('Crom.Pagination');
 
-Crom.Pagination.Collection = (function(_super) {
-  __extends(Collection, _super);
+Crom.Pagination.Collection = (function(superClass) {
+  extend(Collection, superClass);
 
   function Collection() {
     return Collection.__super__.constructor.apply(this, arguments);
