@@ -119,6 +119,40 @@ describe('Crom.Model', function() {
   it('should extend Backbone.Model', function() {
     return expect(model instanceof Backbone.Model).toBeTruthy();
   });
+  describe('parent', function() {
+    var child, parent;
+    parent = null;
+    child = null;
+    describe('when the model is not nested within another', function() {
+      beforeEach(function() {
+        return parent = model.parent;
+      });
+      return it('should have an undefined parent', function() {
+        return expect(parent).toEqual(void 0);
+      });
+    });
+    describe('when the model is nested within another', function() {
+      beforeEach(function() {
+        child = model.label;
+        return parent = model;
+      });
+      return it('should have a parent model', function() {
+        return expect(child.parent).toEqual(parent);
+      });
+    });
+    return describe('when the model is an element in a collection', function() {
+      beforeEach(function() {
+        child = model.songs.at(0);
+        return parent = model.songs;
+      });
+      it('should have a parent collection', function() {
+        return expect(child.parent).toEqual(parent);
+      });
+      return it('should have a parent equal to its collection', function() {
+        return expect(child.parent).toEqual(child.collection);
+      });
+    });
+  });
   describe('#set', function() {
     describe('when provided a basic hash of attrs', function() {
       var name, result;

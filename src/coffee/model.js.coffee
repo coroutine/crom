@@ -6,6 +6,7 @@ class Crom.Model extends Backbone.Model
     @nested = _(this).result('nested')
     _(@nested).each @_createNestedInstance
     super
+    @parent = @collection if @collection
 
   set: (key, val, options) ->
     attrs
@@ -44,19 +45,25 @@ class Crom.Model extends Backbone.Model
     super(method, model, options)
 
   _createNestedInstance: (ModelClass, instanceName) =>
-    if @_isBackboneDataStructure(ModelClass)
-      this[instanceName] = new ModelClass()
+    instance = if @_isBackboneDataStructure(ModelClass)
+      new ModelClass()
     else if ModelClass.hasOwnProperty('alias')
       options   = ModelClass
       klass     = options['class']
       alias     = options['alias']
-      throw 'A "class" attribute must be defined when using "alias".' unless klass
 
-      this[alias] = this[instanceName] = new klass()
+      unless klass
+        throw 'A "class" attribute must be defined when using "alias".'
+
+      this[alias] = new klass()
+
+    instance.parent     = this
+    this[instanceName]  = instance
 
   _setNestedInstances: (attrs) ->
     (ModelClass, instanceName) =>
-      ModelClass = ModelClass['class'] unless @_isBackboneDataStructure(ModelClass)
+      unless @_isBackboneDataStructure(ModelClass)
+        ModelClass = ModelClass['class']
 
       newVal = attrs[instanceName]
       return if newVal == undefined

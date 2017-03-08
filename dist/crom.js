@@ -21,6 +21,9 @@ Crom.Model = (function(superClass) {
     this.nested = _(this).result('nested');
     _(this.nested).each(this._createNestedInstance);
     Model.__super__.constructor.apply(this, arguments);
+    if (this.collection) {
+      this.parent = this.collection;
+    }
   }
 
   Model.prototype.set = function(key, val, options) {
@@ -71,18 +74,22 @@ Crom.Model = (function(superClass) {
   };
 
   Model.prototype._createNestedInstance = function(ModelClass, instanceName) {
-    var alias, klass, options;
-    if (this._isBackboneDataStructure(ModelClass)) {
-      return this[instanceName] = new ModelClass();
-    } else if (ModelClass.hasOwnProperty('alias')) {
-      options = ModelClass;
-      klass = options['class'];
-      alias = options['alias'];
-      if (!klass) {
-        throw 'A "class" attribute must be defined when using "alias".';
+    var alias, instance, klass, options;
+    instance = (function() {
+      if (this._isBackboneDataStructure(ModelClass)) {
+        return new ModelClass();
+      } else if (ModelClass.hasOwnProperty('alias')) {
+        options = ModelClass;
+        klass = options['class'];
+        alias = options['alias'];
+        if (!klass) {
+          throw 'A "class" attribute must be defined when using "alias".';
+        }
+        return this[alias] = new klass();
       }
-      return this[alias] = this[instanceName] = new klass();
-    }
+    }).call(this);
+    instance.parent = this;
+    return this[instanceName] = instance;
   };
 
   Model.prototype._setNestedInstances = function(attrs) {

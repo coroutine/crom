@@ -17,6 +17,10 @@ describe 'Crom.Collection', ->
   it 'should extend Backbone.Collection', ->
     expect(collection instanceof Backbone.Collection).toBeTruthy()
 
+  # ----------------------------------------------------------------------------
+  # #duplicate
+  # ----------------------------------------------------------------------------
+  
   describe '#duplicate', ->
     result = null
 

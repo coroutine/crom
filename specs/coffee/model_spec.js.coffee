@@ -36,6 +36,42 @@ describe 'Crom.Model', ->
     expect(model instanceof Backbone.Model).toBeTruthy()
 
   # ----------------------------------------------------------------------------
+  # parent
+  # ----------------------------------------------------------------------------
+
+  describe 'parent', ->
+    parent  = null
+    child   = null
+
+    describe 'when the model is not nested within another', ->
+
+      beforeEach ->
+        parent = model.parent
+
+      it 'should have an undefined parent', ->
+        expect(parent).toEqual(undefined)
+
+    describe 'when the model is nested within another', ->
+
+      beforeEach ->
+        child   = model.label
+        parent  = model
+
+      it 'should have a parent model', ->
+        expect(child.parent).toEqual(parent)
+
+    describe 'when the model is an element in a collection', ->
+      beforeEach ->
+        child   = model.songs.at(0)
+        parent  = model.songs
+
+      it 'should have a parent collection', ->
+        expect(child.parent).toEqual(parent)
+
+      it 'should have a parent equal to its collection', ->
+        expect(child.parent).toEqual(child.collection)
+
+  # ----------------------------------------------------------------------------
   # #set
   # ----------------------------------------------------------------------------
 
