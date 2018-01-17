@@ -16,7 +16,7 @@ generateResponse  = (count) ->
       total_count:  count
       count:        count
       current_page: 1
-      num_pages:    Math.floor(count / recordsPerPage)
+      total_pages:  Math.floor(count / recordsPerPage)
       offset_value: 1
 
   resp.collection = _(recordsPerPage).times (i) ->
@@ -51,7 +51,7 @@ describe 'Crom.Pagination.Collection', ->
       expect(collection.pagination.get('current_page')).toEqual(1)
 
     it "should have 2 pages", ->
-      expect(collection.pagination.get('num_pages')).toEqual(2)
+      expect(collection.pagination.get('total_pages')).toEqual(2)
 
     it "should be on the first page", ->
       expect(collection.pagination.get('offset_value')).toEqual(1)

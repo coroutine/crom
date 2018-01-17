@@ -160,7 +160,7 @@ Crom.Pagination.Model = (function(superClass) {
     total_count: 0,
     count: 0,
     current_page: 1,
-    num_pages: 1,
+    total_pages: 1,
     offset_value: 1
   };
 
@@ -192,7 +192,7 @@ Crom.Pagination.Model = (function(superClass) {
   };
 
   Model.prototype.lastPage = function() {
-    return this.get('num_pages');
+    return this.get('total_pages');
   };
 
   Model.prototype.isFirstPage = function() {
