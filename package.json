@@ -1,6 +1,6 @@
 {
   "name": "crom",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A set of JS Utils that laugh at your four winds.",
   "main": "dist/index.js",
   "scripts": {
@@ -8,6 +8,10 @@
   },
   "author": "Tim Lowrimore",
   "license": "MIT",
+  "dependencies": {
+    "underscore": "~1.7.0",
+    "backbone": "~1.1.2"
+  },
   "devDependencies": {
     "coffee-script": "^1.8.0",
     "graceful-fs": "^4.1.11",

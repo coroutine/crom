@@ -6,8 +6,8 @@ module.exports = (config) ->
     browsers:   ['PhantomJS']
     reporters:  ['dots']
     files:      [
-      'bower_components/underscore/underscore.js'
-      'bower_components/backbone/backbone.js'
+      'node_modules/underscore/underscore.js'
+      'node_modules/backbone/backbone.js'
       'dist/crom.js'
       'specs/index.js'
     ]

@@ -176,11 +176,11 @@ Crom.Pagination.Model = (function(superClass) {
   };
 
   Model.prototype.itemRemoved = function() {
-    return this.set('total_count', this.totalCount() - 1);
+    return this.set('total_count', this.collection.length);
   };
 
   Model.prototype.itemAdded = function() {
-    return this.set('total_count', this.totalCount() + 1);
+    return this.set('total_count', this.collection.length);
   };
 
   Model.prototype.totalCount = function() {
